@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            background-color: black;
+        }
+        #spotify-url {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 10px;
+            width: 200px;
+        }
+        #search-button {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+        #playlist {
+            color: green;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="spotify-url" placeholder="Enter Spotify playlist URL">
+    <button id="search-button" onclick="validateAndFetchPlaylist()">Search</button>
+    <div id="playlist"></div>
+
+    <script>
+      function validateAndFetchPlaylist() {
+    var url = document.getElementById('spotify-url').value;
+
+    // Validate the URL
+    if (url.startsWith('https://open.spotify.com/playlist/')) {
+        // Extract the playlist ID from the URL
+        var playlistId = url.split('https://open.spotify.com/playlist/')[1];
+
+        // Fetch the playlist from the Spotify API
+        fetch('https://api.spotify.com/v1/playlists/' + playlistId + '/tracks', {
+            headers: { 'Authorization': 'Bearer ' + yourAccessToken }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Display the songs in the playlist
+            var songs = data.items.map(item => item.track.name);
+            document.getElementById('playlist').innerHTML = songs.join('<br>');
+        })
+        .catch(error => {
+            document.getElementById('playlist').innerHTML = 'Error: ' + error;
+        });
+    } else {
+        document.getElementById('playlist').innerHTML = 'Error: Invalid URL.';
+    }
+}
+
+    </script>
+</body>
+</html>
